@@ -1,0 +1,24 @@
+version: '3'
+services:
+  app:
+    container_name: vb-server
+    image: nunocp/vb-server
+    build: .
+    depends_on:
+      - vb-db
+    links:
+      - vb-db
+    ports:
+      - "4000:4000"
+    restart: always
+
+  vb-db:
+    container_name: vb-db
+    image: mysql:8.0.22
+    restart: always
+    ports:
+      - "3306:3306"
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql/create-db-table.sql:/docker-entrypoint-initdb.d/create-db-table.sql
