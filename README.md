@@ -30,6 +30,8 @@ As tecnologias utilizadas foram:
 
 1. Para testar, é necessário ter o [Node.js](https://nodejs.org) e [npm](https://www.npmjs.com/) instalados.
 
-2. Após rodar os contêineres com as instruções anteriores, execute: `npm test`\
+2. Na raiz do projeto, instale as dependências necessárias executando: `npm install`
+
+3. Rode os contêineres seguindo as instruções anteriores e execute: `npm test`\
 \
-**Nota:** O teste está configurado com timeout de 20 segundos, o que tem sido suficiente, porém o retorno da API do Arcsecond às vezes pode demorar mais, ocasionando fails.
+**Nota:** O teste está configurado com timeout de 20 segundos, o que tem sido suficiente, porém o retorno da API do Arcsecond às vezes pode demorar mais, ocasionando fails. Caso seja esse o caso, ajuste o *testTimeout* no arquivo *jest.config.js* na raiz do projeto.
