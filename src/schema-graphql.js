@@ -1,5 +1,7 @@
 const { gql } = require ('apollo-server');
 
+
+// ficou bem massa a definição do schema
 const typeDefs = gql`
 	# === QUERIES ===
 
@@ -24,7 +26,7 @@ const typeDefs = gql`
 		success: Boolean!
 		message: String
 		planetName: String!
-        station: ID!
+        station: ID! # stationId talvez fosse mais claro
 	}
 `;
 
