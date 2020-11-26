@@ -1,8 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
-
 class StationAPI {
 	constructor (prismaClient) {
-		this.prisma = new PrismaClient();
+		this.prisma = prismaClient; // isso aqui resolveria o problema dos testes, dai no index tem a inicialização normal também
 	}
 
 	async searchByPlanet (planetName) {

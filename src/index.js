@@ -1,9 +1,12 @@
 const { ApolloServer } = require ('apollo-server');
+const { PrismaClient } = require('@prisma/client')
 
 const typeDefs = require ('./schema-graphql');
 const resolvers = require ('./resolvers');
 const { PlanetAPI } = require ('./datasources/planet-api');
 const { StationAPI } = require ('./datasources/station-api');
+
+const prisma = new PrismaClient();
 
 const server = new ApolloServer ({
 	typeDefs,
@@ -15,7 +18,7 @@ const server = new ApolloServer ({
 	}),
 	
 	context: () => ({
-		stationAPI: new StationAPI(),
+		stationAPI: new StationAPI(prisma),
 	})
 	
 });

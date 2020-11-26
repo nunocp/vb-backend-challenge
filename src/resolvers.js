@@ -1,18 +1,25 @@
+
+// não ficou muito legal colocar toda a lógica aqui nos resolvers,
+// inclusive tem algumas coisas repetidas, o ideal era tudo isso aqui estar lá no planetApi/stationApi
 const resolvers = {
 	// QUERIES
 	Query: {
+		// tem um erro meio grave nessa query, não consegui buscar planetas passando page: 2
 		async suitablePlanets (parent, { page }, { dataSources }) {
 			page = page || 1;
-			if (page < 1) { page = 1; }
+			if (page < 1) { page = 1; } // essa lógica ta aqui e lá no getPlanets também
 
 			// How many pages to grab from planetAPI. Must be >= 1.
 			const apiPageCount = 10;
 
 			// Calculate page range.
-			const firstPage = ((page - 1) * apiPageCount) + 1;
-			const lastPage = firstPage + apiPageCount - 1;
-
-			// Send requests.
+			// essa lógica ficou bem complexa, acho que dava pra simplificar bastante
+			// vou tentar deixar uma sugestão
+			const pages = [...Array(pages).keys()].map(n => n + 1) // essa é uma das formas de implementar um range em javascript
+			const returnedPromises = await Promise.all(pages.map(page => dataSources.planetApi.getPlanets(page)))
+			// ----- mas seguindo da forma que você fez
+			// em javascript é sempre idela utilizar let ao invés de var
+			// pra evitar hoisting
 			var promises = [];
 			for (var p = firstPage; p <= lastPage; p++) {
 				promises[p-1] = dataSources.planetAPI.getPlanets(p);
@@ -27,19 +34,20 @@ const resolvers = {
 			}
 
 			return allPlanets.filter (
-				planet =>
+				planet => // aqui tem um erro um pouco grave, se o planeta é undefined rola um throw ao acessar o .mass
 				 	planet.mass // Because some planets can have 'mass' == 'null'.
 					&& planet.mass.unit == "M_jup"
 					&& planet.mass.value > 25
 			);
 		},
 
+		// esse ficou bem massa
 		async searchPlanet (parent, { planetName }, { dataSources }) {
-			var planetsFound = await dataSources.planetAPI.searchPlanet(planetName);
-			return planetsFound;
+			return dataSources.planetAPI.searchPlanet(planetName);
 		}
 	},
 
+	// esses ficaram legais
 	Planet: {	
 		// Just for explicitiness. Function 'name' here is redundant, because default resolver already solves to 'parent.name'.
 		name (parent) {
@@ -62,6 +70,7 @@ const resolvers = {
 	// MUTATIONS
 	Mutation: {
 		async installStation(parent, { planetName }, { stationAPI }) {
+			// entry não ficou muito claro
 			const entry = await stationAPI.addAtPlanet (planetName);
 			return {
 				success: true,
